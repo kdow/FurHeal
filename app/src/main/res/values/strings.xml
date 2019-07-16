@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">FurHeal</string>
     <string name="weight">Weight</string>
-    <string name="weight_history">Weight History</string>
+    <string name="weight_log">Weight Log</string>
+    <string name="add_weight">Add Weight</string>
+    <string name="export_weight">Export Weight History</string>
 </resources>
