@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1012274949524",
+    "firebase_url": "https://furhealapp.firebaseio.com",
+    "project_id": "furhealapp",
+    "storage_bucket": "furhealapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012274949524:android:98397a362565cf01",
+        "android_client_info": {
+          "package_name": "com.myapp.android.furheal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012274949524-649rule03o5h4lfpnr8gqjcc6h465enk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAD4jFs0tqZRh0fF1cz8GFzq4UCpVhjuH4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012274949524-649rule03o5h4lfpnr8gqjcc6h465enk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

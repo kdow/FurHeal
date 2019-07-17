@@ -4,4 +4,9 @@
     <string name="weight_log">Weight Log</string>
     <string name="add_weight">Add Weight</string>
     <string name="export_weight">Export Weight History</string>
+    <string-array name="weight_options_array">
+        <item>Pounds</item>
+        <item>Kilograms</item>
+    </string-array>
+    <string name="date_picker_title">Date of weighing:</string>
 </resources>
