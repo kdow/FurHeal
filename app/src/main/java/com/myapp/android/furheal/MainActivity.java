@@ -9,10 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private Button mWeightButton;
+
+    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,5 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private void goToWeight() {
         Intent intent = new Intent(this, WeightActivity.class);
         startActivity(intent);
+    }
+
+    private void initFirestore() {
+        mFirestore = FirebaseFirestore.getInstance();
     }
 }

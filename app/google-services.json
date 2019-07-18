@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1012274949524-9hjdgjcv87s3fq4nnnmg8bvft7l4i4sh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myapp.android.furheal",
+            "certificate_hash": "64105b218156ee11def76610c6ac6fb1ceaa3795"
+          }
+        },
+        {
+          "client_id": "1012274949524-l5n02v3ll76f2u2msen5uqkrpqmiaqa0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myapp.android.furheal",
+            "certificate_hash": "560a6179972e3701018a92c2e3de23f472af5900"
+          }
+        },
+        {
           "client_id": "1012274949524-649rule03o5h4lfpnr8gqjcc6h465enk.apps.googleusercontent.com",
           "client_type": 3
         }
