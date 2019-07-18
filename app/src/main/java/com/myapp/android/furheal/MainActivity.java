@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
                 goToWeight();
             }
         });
+
+        initFirestore();
     }
 
     private void goToWeight() {
