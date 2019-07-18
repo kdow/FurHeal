@@ -47,6 +47,7 @@ public class AddWeightActivity extends AppCompatActivity {
     EditText mEditText;
     String mWeightDate;
     Button mSaveButton;
+    String mWeightUnit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,8 @@ public class AddWeightActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_weight);
 
         initViews();
+
+        mWeightUnit = getResources().getStringArray(R.array.weight_options_array)[0];
 
         Spinner spin = (Spinner) findViewById(R.id.add_weights_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -66,6 +69,7 @@ public class AddWeightActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
+                mWeightUnit = (String) parent.getItemAtPosition(position);
             }
 
             @Override
@@ -123,11 +127,13 @@ public class AddWeightActivity extends AppCompatActivity {
 
     private void onSaveButtonClicked() {
         String weight = mEditText.getText().toString();
+        String weightUnit = mWeightUnit;
         String weightDate = mWeightDate;
 //        final WeightEntry newWeight = new WeightEntry(weight);
 
         Map<String, Object> weightEntry = new HashMap<>();
         weightEntry.put("weight", weight);
+        weightEntry.put("unit", weightUnit);
         weightEntry.put("date", weightDate);
 
         final Context context = getApplicationContext();
@@ -141,6 +147,7 @@ public class AddWeightActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
                     Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.get());
+                    mEditText.setText("");
                     Toast.makeText(context, text, duration).show();
                 }
             })
