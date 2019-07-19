@@ -2,6 +2,7 @@ package com.myapp.android.furheal;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -154,6 +155,11 @@ public class AddWeightActivity extends AppCompatActivity {
                     Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.get());
                     mEditText.setText("");
                     Toast.makeText(context, text, duration).show();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("weight", weight);
+                    resultIntent.putExtra("unit", weightUnit);
+                    resultIntent.putExtra("date", weightDate);
+                    setResult(RESULT_OK, resultIntent);
 //                    WeightActivity.updateWeightLog(weightDate, weight, weightUnit);
                 }
             })

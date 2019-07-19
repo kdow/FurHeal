@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,11 +23,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class WeightActivity extends AppCompatActivity {
 
     private static final String TAG = "WeightDetail";
+    static final int ADD_WEIGHT_REQUEST = 1;
 
     static LinearLayout linearLayout;
     static TextView textView;
@@ -80,13 +83,24 @@ public class WeightActivity extends AppCompatActivity {
 
     private void goToAddWeight() {
         Intent intent = new Intent(this, AddWeightActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, ADD_WEIGHT_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADD_WEIGHT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Bundle weightData = data.getExtras();
+                updateWeightLog(weightData.getCharSequence("date").toString(), weightData.getCharSequence("weight").toString(), weightData.getCharSequence("unit").toString());
+            }
+        }
     }
 
     public void updateWeightLog(String date, String weight, String unit) {
-//        linearLayout = (LinearLayout) findViewById(R.id.weightLog);
+        linearLayout = (LinearLayout) findViewById(R.id.weightLog);
         textView = new TextView(WeightActivity.this);
-        textView.setText(weight);
+        String fullInfo = weight + " " + unit + " " + date;
+        textView.setText(fullInfo);
         if (linearLayout != null) {
             linearLayout.addView(textView);
         }
