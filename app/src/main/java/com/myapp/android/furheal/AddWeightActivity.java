@@ -102,7 +102,12 @@ public class AddWeightActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                buttonDate.setText((month + 1) + "/" + day + "/" + year);
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.YEAR, year);
+                                c.set(Calendar.MONTH, month);
+                                c.set(Calendar.DAY_OF_MONTH, day);
+                                mWeightDate = DateFormat.getDateInstance().format(c.getTime());
+                                buttonDate.setText(DateFormat.getDateInstance().format(c.getTime()));
                             }
                         }, year, month, dayOfMonth);
                 datePickerDialog.getDatePicker();
@@ -126,9 +131,9 @@ public class AddWeightActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private void onSaveButtonClicked() {
-        String weight = mEditText.getText().toString();
-        String weightUnit = mWeightUnit;
-        String weightDate = mWeightDate;
+        final String weight = mEditText.getText().toString();
+        final String weightUnit = mWeightUnit;
+        final String weightDate = mWeightDate;
 //        final WeightEntry newWeight = new WeightEntry(weight);
 
         Map<String, Object> weightEntry = new HashMap<>();
@@ -149,6 +154,7 @@ public class AddWeightActivity extends AppCompatActivity {
                     Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.get());
                     mEditText.setText("");
                     Toast.makeText(context, text, duration).show();
+//                    WeightActivity.updateWeightLog(weightDate, weight, weightUnit);
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
@@ -158,5 +164,4 @@ public class AddWeightActivity extends AppCompatActivity {
                 }
             });
     }
-
 }
