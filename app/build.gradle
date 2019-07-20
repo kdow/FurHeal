@@ -31,6 +31,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.0.0'
     implementation 'com.google.firebase:firebase-firestore:20.1.0'
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'net.sf.opencsv:opencsv:2.3'
 }
+
+
 
 apply plugin: 'com.google.gms.google-services'
