@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -55,6 +54,7 @@ public class WeightActivity extends AppCompatActivity {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 final LinearLayout linearLayout = findViewById(R.id.weightLog);
                                 final TextView textView = new TextView(WeightActivity.this);
+                                textView.setTextSize(16);
                                 String fullDate = document.getData().get("weight").toString()
                                         + " " + document.getData().get("unit").toString() + " "
                                         + document.getData().get("date").toString();
@@ -91,7 +91,9 @@ public class WeightActivity extends AppCompatActivity {
         if (requestCode == ADD_WEIGHT_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Bundle weightData = data.getExtras();
-                updateWeightLog(weightData.getCharSequence("date").toString(), weightData.getCharSequence("weight").toString(), weightData.getCharSequence("unit").toString());
+                updateWeightLog(weightData.getCharSequence("date").toString(),
+                        weightData.getCharSequence("weight").toString(),
+                        weightData.getCharSequence("unit").toString());
             }
         }
     }
