@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">FurHeal</string>
+    <string name="btnSignIn">Sign In</string>
+    <string name="btnSignOut">Sign Out</string>
+    <string name="txtEmail">Email</string>
+    <string name="txtUser">User</string>
     <string name="weight">Weight</string>
     <string name="weight_log">Weight Log</string>
     <string name="add_weight">Add Weight</string>

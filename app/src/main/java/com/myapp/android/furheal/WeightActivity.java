@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.myapp.android.furheal.model.Pet;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -66,7 +67,9 @@ public class WeightActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                Pet p = new Pet(document.getId());
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 final LinearLayout linearLayout = findViewById(R.id.weightLog);
                                 final TextView textView = new TextView(WeightActivity.this);
