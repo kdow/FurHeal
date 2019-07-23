@@ -30,6 +30,24 @@
         android:layout_marginBottom="8dp"
         android:text="@string/txtUser"/>
 
+    <ImageView
+        android:id="@+id/nurseJazzy"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/nursejazzy"/>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <Button
+        android:id="@+id/select_pet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select"/>
+
     <Button
         android:id="@+id/btnSignIn"
         android:layout_width="wrap_content"
