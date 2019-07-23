@@ -1,8 +1,12 @@
 package com.myapp.android.furheal.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Pet {
 
     private String name;
+    private List<WeightEntry> weights = new ArrayList<>();
 
     public Pet(String name) {
         this.name = name;
