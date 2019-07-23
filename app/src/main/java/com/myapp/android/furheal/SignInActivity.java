@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +34,7 @@ public class SignInActivity extends AppCompatActivity {
     private Button btnSignIn;
     private TextView txtEmail;
     private TextView txtUser;
+    private ImageView petPhoto;
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build());
@@ -55,6 +60,7 @@ public class SignInActivity extends AppCompatActivity {
 
         txtEmail =(TextView) findViewById(R.id.txtEmail);
         txtUser = (TextView) findViewById(R.id.txtUser);
+        petPhoto = (ImageView) findViewById(R.id.nurseJazzy);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
 
@@ -72,14 +78,41 @@ public class SignInActivity extends AppCompatActivity {
             btnSignOut.setVisibility(View.GONE);
             txtEmail.setVisibility(View.GONE);
             txtUser.setVisibility(View.GONE);
+            petPhoto.setVisibility(View.VISIBLE);
         } else {
             btnSignIn.setVisibility(View.GONE);
             btnSignOut.setVisibility(View.VISIBLE);
             txtEmail.setVisibility(View.VISIBLE);
             txtUser.setVisibility(View.VISIBLE);
+            petPhoto.setVisibility(View.VISIBLE);
 
             txtUser.setText(user.getDisplayName());
             txtEmail.setText(user.getEmail());
+
+            // Get reference of widgets from XML layout
+            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            Button btn = (Button) findViewById(R.id.select_pet);
+
+            // Initializing a String Array
+            String[] pets = new String[]{
+                    "New Pet"
+            };
+
+            final List<String> petsList = new ArrayList<>(Arrays.asList(pets));
+
+            // Initializing an ArrayAdapter
+            final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                    this,R.layout.spinner_item,petsList);
+
+            spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+            spinner.setAdapter(spinnerArrayAdapter);
+
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 
