@@ -6,47 +6,42 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity">
+    tools:context=".SymptomActivity">
 
-    <Button
-        android:id="@+id/meds"
+    <TextView
+        android:id="@+id/symptomTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/meds" />
+        android:text="@string/symptom_log"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <Button
-        android:id="@+id/symptoms"
+        android:id="@+id/add_symptom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/symptoms" />
+        android:text="@string/add_symptom"/>
 
-    <Button
-        android:id="@+id/weight"
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
+        android:layout_marginTop="32dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/weight" />
+        android:layout_marginBottom="8dp">
 
-    <Button
-        android:id="@+id/food"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/food" />
-
+        <LinearLayout
+            android:id="@+id/symptomLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

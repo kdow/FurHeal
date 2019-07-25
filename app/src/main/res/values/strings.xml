@@ -22,4 +22,7 @@
     <string name="meds">Meds</string>
     <string name="meds_log">Medication Log</string>
     <string name="add_med">Add Medication</string>
+    <string name="symptoms">Symptoms</string>
+    <string name="symptom_log">Symptom Log</string>
+    <string name="add_symptom">Add Symptom</string>
 </resources>
