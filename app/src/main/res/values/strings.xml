@@ -13,4 +13,7 @@
         <item>Kilograms</item>
     </string-array>
     <string name="date_picker_title">Date of weighing:</string>
+    <string-array name="pet_options_array">
+        <item>New Pet</item>
+    </string-array>
 </resources>

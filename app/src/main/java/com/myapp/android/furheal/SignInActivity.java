@@ -18,15 +18,32 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class SignInActivity extends AppCompatActivity {
+
+    private static final String TAG = "SignInDetail";
 
     private static final int RC_SIGN_IN = 0;
     static final int SELECT_PET_REQUEST = 1;
@@ -38,6 +55,8 @@ public class SignInActivity extends AppCompatActivity {
     private TextView txtUser;
     private ImageView petPhoto;
     String mPet;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference collectionReference = db.collection("users");
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build());
@@ -76,27 +95,33 @@ public class SignInActivity extends AppCompatActivity {
 
     private void updateUi() {
         FirebaseUser user = mAuth.getCurrentUser();
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        Button btnSelect = (Button) findViewById(R.id.select_pet);
+
         if (user == null) {
             btnSignIn.setVisibility(View.VISIBLE);
             btnSignOut.setVisibility(View.GONE);
             txtEmail.setVisibility(View.GONE);
             txtUser.setVisibility(View.GONE);
             petPhoto.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.GONE);
+            btnSelect.setVisibility(View.GONE);
         } else {
             btnSignIn.setVisibility(View.GONE);
             btnSignOut.setVisibility(View.VISIBLE);
             txtEmail.setVisibility(View.VISIBLE);
             txtUser.setVisibility(View.VISIBLE);
             petPhoto.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.VISIBLE);
+            btnSelect.setVisibility(View.VISIBLE);
 
             txtUser.setText(user.getDisplayName());
             txtEmail.setText(user.getEmail());
 
-            mPet = getResources().getStringArray(R.array.weight_options_array)[0];
+            mPet = getResources().getStringArray(R.array.pet_options_array)[0];
 
             // Get reference of widgets from XML layout
-            final Spinner spinner = (Spinner) findViewById(R.id.spinner);
-            Button btn = (Button) findViewById(R.id.select_pet);
+
 
             // Initializing a String Array
             String[] pets = new String[]{
@@ -125,7 +150,7 @@ public class SignInActivity extends AppCompatActivity {
                 }
             });
 
-            btn.setOnClickListener(new View.OnClickListener() {
+            btnSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String mPet = spinner.getSelectedItem().toString();
@@ -161,6 +186,28 @@ public class SignInActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final String currentUserId = user.getUid();
+                String name = user.getDisplayName();
+
+                // Create user map to add to User collection
+                Map<String, String> userEntry = new HashMap<>();
+                userEntry.put("userId", currentUserId);
+                userEntry.put("name", name);
+
+                collectionReference.document(currentUserId)
+                        .set(userEntry)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "DocumentSnapshot successfully written!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error writing document", e);
+                            }
+                        });
                 Log.d(this.getClass().getName(), "This user signed in with " + response.getProviderType());
                 updateUi();
                 // ...
