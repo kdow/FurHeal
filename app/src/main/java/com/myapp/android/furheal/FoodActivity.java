@@ -56,8 +56,7 @@ public class FoodActivity extends AppCompatActivity {
                         final LinearLayout linearLayout = findViewById(R.id.foodLog);
                         final TextView textView = new TextView(FoodActivity.this);
                         textView.setTextSize(16);
-                        String fullDate = document.getData().get("food").toString() + " "
-                                + document.getData().get("date").toString();
+                        String fullDate = document.getData().get("food").toString();
                         textView.setText(fullDate);
                         if (linearLayout != null) {
                             linearLayout.addView(textView);
@@ -88,13 +87,13 @@ public class FoodActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Bundle foodData = data.getExtras();
                 updateFoodLog(foodData.getCharSequence("date").toString(),
-                        foodData.getCharSequence("weight").toString());
+                        foodData.getCharSequence("food").toString());
             }
         }
     }
 
     public void updateFoodLog(String date, String food) {
-        linearLayout = (LinearLayout) findViewById(R.id.weightLog);
+        linearLayout = (LinearLayout) findViewById(R.id.foodLog);
         textView = new TextView(FoodActivity.this);
         String fullInfo = food + " " + date;
         textView.setText(fullInfo);
