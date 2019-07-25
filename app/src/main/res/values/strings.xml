@@ -16,4 +16,7 @@
     <string-array name="pet_options_array">
         <item>New Pet</item>
     </string-array>
+    <string name="food">Food</string>
+    <string name="food_log">Food Log</string>
+    <string name="add_food">Add Food</string>
 </resources>

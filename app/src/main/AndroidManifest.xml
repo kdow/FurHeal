@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddNewPetActivity"></activity>
+        <activity android:name=".AddFoodActivity"></activity>
+        <activity android:name=".FoodActivity" />
+        <activity android:name=".AddNewPetActivity" />
         <activity android:name=".AddWeightActivity" />
         <activity android:name=".WeightActivity" />
         <activity android:name=".MainActivity" />
