@@ -6,37 +6,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity">
+    tools:context=".MedsActivity">
 
-    <Button
-        android:id="@+id/meds"
+
+    <TextView
+        android:id="@+id/medsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/meds" />
+        android:text="@string/meds_log"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <Button
-        android:id="@+id/weight"
+        android:id="@+id/add_med"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/weight" />
+        android:text="@string/add_med"/>
 
-    <Button
-        android:id="@+id/food"
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
+        android:layout_marginTop="32dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/food" />
+        android:layout_marginBottom="8dp">
 
+        <LinearLayout
+            android:id="@+id/medsLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

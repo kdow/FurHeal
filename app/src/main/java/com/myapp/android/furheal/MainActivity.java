@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button mMedsButton;
     private Button mWeightButton;
     private Button mFoodButton;
 
@@ -24,8 +25,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button mMedsButton = (Button) findViewById(R.id.meds);
         Button mWeightButton = (Button) findViewById(R.id.weight);
         Button mFoodButton = (Button) findViewById(R.id.food);
+
+        mMedsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MedsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mWeightButton.setOnClickListener(new View.OnClickListener() {
             @Override
