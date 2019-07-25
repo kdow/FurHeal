@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -45,8 +46,11 @@ public class WeightActivity extends AppCompatActivity {
 
         linearLayout = (LinearLayout) findViewById(R.id.weightLog);
 
-        CollectionReference docRef = db.collection("testPets")
-                .document("JazzyTest").collection("weights");
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        CollectionReference docRef = db.collection("users")
+                .document(currentUser).collection("weights");
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

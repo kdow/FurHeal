@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.myapp.android.furheal.model.Pet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +59,7 @@ public class SignInActivity extends AppCompatActivity {
     private TextView txtUser;
     private ImageView petPhoto;
     String mPet;
+    private String userPet;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference = db.collection("users");
 
@@ -122,9 +127,29 @@ public class SignInActivity extends AppCompatActivity {
 
             // Get reference of widgets from XML layout
 
+            String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+            collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            String userPet = document.getData().get("pets").toString();
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                }
+            });
+
+
+
 
             // Initializing a String Array
             String[] pets = new String[]{
+                    "Jazzy",
                     "New Pet"
             };
 

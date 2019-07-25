@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.myapp.android.furheal.model.WeightEntry;
@@ -145,8 +147,9 @@ public class AddWeightActivity extends AppCompatActivity {
         final Context context = getApplicationContext();
         final CharSequence text = "Weight added!";
         final int duration = Toast.LENGTH_SHORT;
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        db.collection("testPets").document("JazzyTest")
+        db.collection("users").document(currentUser)
                 .collection("weights")
             .add(weightEntry)
             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
