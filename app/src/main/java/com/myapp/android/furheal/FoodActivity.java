@@ -86,16 +86,17 @@ public class FoodActivity extends AppCompatActivity {
         if (requestCode == ADD_FOOD_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Bundle foodData = data.getExtras();
-                updateFoodLog(foodData.getCharSequence("date").toString(),
+                updateFoodLog(foodData.getCharSequence("startDate").toString(),
+                        foodData.getCharSequence("endDate").toString(),
                         foodData.getCharSequence("food").toString());
             }
         }
     }
 
-    public void updateFoodLog(String date, String food) {
+    public void updateFoodLog(String startDate, String endDate, String food) {
         linearLayout = (LinearLayout) findViewById(R.id.foodLog);
         textView = new TextView(FoodActivity.this);
-        String fullInfo = food + " " + date;
+        String fullInfo = food;
         textView.setText(fullInfo);
         if (linearLayout != null) {
             linearLayout.addView(textView);

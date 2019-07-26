@@ -43,9 +43,11 @@ public class AddFoodActivity extends AppCompatActivity {
     Calendar calendar;
 
     private View selectDate;
+    private View endDate;
 
     EditText mEditText;
     String mFoodDate;
+    String mEndDate;
     Button mSaveButton;
 
     @Override
@@ -56,6 +58,7 @@ public class AddFoodActivity extends AppCompatActivity {
         initViews();
 
         selectDate = findViewById(R.id.food_date);
+        endDate = findViewById(R.id.end_date);
         date = findViewById(R.id.tvDate);
 
         calendar = Calendar.getInstance();
@@ -64,7 +67,6 @@ public class AddFoodActivity extends AppCompatActivity {
         mFoodDate = currentDate;
 
         final Button buttonDate = findViewById(R.id.food_date);
-        buttonDate.setText(currentDate);
 
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +84,31 @@ public class AddFoodActivity extends AppCompatActivity {
                                 c.set(Calendar.DAY_OF_MONTH, day);
                                 mFoodDate = DateFormat.getDateInstance().format(c.getTime());
                                 buttonDate.setText(DateFormat.getDateInstance().format(c.getTime()));
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.getDatePicker();
+                datePickerDialog.show();
+            }
+        });
+
+        final Button endDate = findViewById(R.id.end_date);
+
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(AddFoodActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.YEAR, year);
+                                c.set(Calendar.MONTH, month);
+                                c.set(Calendar.DAY_OF_MONTH, day);
+                                mEndDate = DateFormat.getDateInstance().format(c.getTime());
+                                endDate.setText(DateFormat.getDateInstance().format(c.getTime()));
                             }
                         }, year, month, dayOfMonth);
                 datePickerDialog.getDatePicker();
@@ -107,10 +134,13 @@ public class AddFoodActivity extends AppCompatActivity {
     private void onSaveButtonClicked() {
         final String food = mEditText.getText().toString();
         final String foodDate = mFoodDate;
+        final String endDate = mEndDate;
 
         Map<String, Object> foodEntry = new HashMap<>();
         foodEntry.put("food", food);
-        foodEntry.put("date", foodDate);
+        foodEntry.put("startDate", foodDate);
+        foodEntry.put("endDate", endDate);
+
 
         final Context context = getApplicationContext();
         final CharSequence text = "Food added!";
@@ -128,7 +158,8 @@ public class AddFoodActivity extends AppCompatActivity {
                         Toast.makeText(context, text, duration).show();
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("food", food);
-                        resultIntent.putExtra("date", foodDate);
+                        resultIntent.putExtra("startDate", foodDate);
+                        resultIntent.putExtra("endDate", endDate);
                         setResult(RESULT_OK, resultIntent);
                     }
                 })

@@ -43,7 +43,21 @@
 
         <Button
             android:id="@+id/food_date"
-            android:text="Select Date"
+            android:text="TODAY"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="End date:" />
+
+        <Button
+            android:id="@+id/end_date"
+            android:text="TBD"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
