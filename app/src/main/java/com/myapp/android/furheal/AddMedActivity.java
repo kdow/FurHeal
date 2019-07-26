@@ -42,10 +42,12 @@ public class AddMedActivity extends AppCompatActivity {
     Calendar calendar;
 
     private View selectDate;
+    private View selectEndDate;
 
     EditText mEditText;
     EditText mEditDoseText;
     String mMedDate;
+    String mMedEndDate;
     String mMedUnit;
     Button mSaveButton;
 
@@ -57,13 +59,13 @@ public class AddMedActivity extends AppCompatActivity {
         initViews();
 
         selectDate = findViewById(R.id.med_date);
-        date = findViewById(R.id.tvDate);
+        selectEndDate = findViewById(R.id.end_date);
+//        date = findViewById(R.id.tvDate);
 
         calendar = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
         String currentDate = df.getDateInstance().format(calendar.getTime());
         mMedDate = currentDate;
-
 
         mMedUnit = getResources().getStringArray(R.array.med_options_array)[0];
 
@@ -87,7 +89,7 @@ public class AddMedActivity extends AppCompatActivity {
         });
 
         final Button buttonDate = findViewById(R.id.med_date);
-        buttonDate.setText(currentDate);
+//        buttonDate.setText(currentDate);
 
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +113,34 @@ public class AddMedActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
+
+        final Button endDate = findViewById(R.id.end_date);
+
+        selectEndDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(AddMedActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.YEAR, year);
+                                c.set(Calendar.MONTH, month);
+                                c.set(Calendar.DAY_OF_MONTH, day);
+                                mMedEndDate = DateFormat.getDateInstance().format(c.getTime());
+                                endDate.setText(DateFormat.getDateInstance().format(c.getTime()));
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.getDatePicker();
+                datePickerDialog.show();
+            }
+        });
     }
+
 
     private void initViews() {
         mEditText = findViewById(R.id.editText);
@@ -133,12 +162,14 @@ public class AddMedActivity extends AppCompatActivity {
         final String dose = mEditDoseText.getText().toString();
         final String medUnit = mMedUnit;
         final String medDate = mMedDate;
+        final String endDate = mMedEndDate;
 
         Map<String, Object> medEntry = new HashMap<>();
         medEntry.put("medication", med);
         medEntry.put("dosage", dose);
         medEntry.put("unit", medUnit);
-        medEntry.put("date", medDate);
+        medEntry.put("startDate", medDate);
+        medEntry.put("endDate", endDate);
 
         final Context context = getApplicationContext();
         final CharSequence text = "Medication added!";
@@ -157,7 +188,6 @@ public class AddMedActivity extends AppCompatActivity {
                         Toast.makeText(context, text, duration).show();
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("medication", med);
-                        resultIntent.putExtra("date", medDate);
                         setResult(RESULT_OK, resultIntent);
                     }
                 })

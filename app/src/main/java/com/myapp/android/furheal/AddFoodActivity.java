@@ -158,8 +158,6 @@ public class AddFoodActivity extends AppCompatActivity {
                         Toast.makeText(context, text, duration).show();
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("food", food);
-                        resultIntent.putExtra("startDate", foodDate);
-                        resultIntent.putExtra("endDate", endDate);
                         setResult(RESULT_OK, resultIntent);
                     }
                 })

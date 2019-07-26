@@ -84,13 +84,12 @@ public class MedsActivity extends AppCompatActivity {
         if (requestCode == ADD_MEDS_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Bundle medData = data.getExtras();
-                updateMedsLog(medData.getCharSequence("date").toString(),
-                        medData.getCharSequence("medication").toString());
+                updateMedsLog(medData.getCharSequence("medication").toString());
             }
         }
     }
 
-    public void updateMedsLog(String date, String medication) {
+    public void updateMedsLog(String medication) {
         linearLayout = (LinearLayout) findViewById(R.id.medsLog);
         textView = new TextView(MedsActivity.this);
         String fullInfo = medication;
