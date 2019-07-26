@@ -93,7 +93,7 @@ public class MedsActivity extends AppCompatActivity {
     public void updateMedsLog(String date, String medication) {
         linearLayout = (LinearLayout) findViewById(R.id.medsLog);
         textView = new TextView(MedsActivity.this);
-        String fullInfo = medication + " " + date;
+        String fullInfo = medication;
         textView.setText(fullInfo);
         if (linearLayout != null) {
             linearLayout.addView(textView);

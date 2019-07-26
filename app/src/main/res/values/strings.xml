@@ -25,4 +25,10 @@
     <string name="symptoms">Symptoms</string>
     <string name="symptom_log">Symptom Log</string>
     <string name="add_symptom">Add Symptom</string>
+    <string-array name="med_options_array">
+        <item>ML</item>
+        <item>MG</item>
+        <item>Pill(s)</item>
+        <item>Drop(s)</item>
+    </string-array>
 </resources>
