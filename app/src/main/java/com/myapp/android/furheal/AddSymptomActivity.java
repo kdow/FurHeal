@@ -38,9 +38,11 @@ public class AddSymptomActivity extends AppCompatActivity {
     Calendar calendar;
 
     private View selectDate;
+    private View endDate;
 
     EditText mEditText;
     String mSymptomDate;
+    String mSymptomEndDate;
     Button mSaveButton;
 
     @Override
@@ -51,7 +53,7 @@ public class AddSymptomActivity extends AppCompatActivity {
         initViews();
 
         selectDate = findViewById(R.id.symptom_date);
-        date = findViewById(R.id.tvDate);
+        endDate = findViewById(R.id.end_date);
 
         calendar = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
@@ -59,7 +61,6 @@ public class AddSymptomActivity extends AppCompatActivity {
         mSymptomDate = currentDate;
 
         final Button buttonDate = findViewById(R.id.symptom_date);
-        buttonDate.setText(currentDate);
 
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +84,32 @@ public class AddSymptomActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
+        final Button endDate = findViewById(R.id.end_date);
+
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(AddSymptomActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.YEAR, year);
+                                c.set(Calendar.MONTH, month);
+                                c.set(Calendar.DAY_OF_MONTH, day);
+                                mSymptomEndDate = DateFormat.getDateInstance().format(c.getTime());
+                                endDate.setText(DateFormat.getDateInstance().format(c.getTime()));
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.getDatePicker();
+                datePickerDialog.show();
+            }
+        });
+
     }
 
     private void initViews() {
@@ -102,10 +129,12 @@ public class AddSymptomActivity extends AppCompatActivity {
     private void onSaveButtonClicked() {
         final String symptom = mEditText.getText().toString();
         final String symptomDate = mSymptomDate;
+        final String symptomEndDate = mSymptomEndDate;
 
         Map<String, Object> medEntry = new HashMap<>();
         medEntry.put("symptom", symptom);
-        medEntry.put("date", symptomDate);
+        medEntry.put("startDate", symptomDate);
+        medEntry.put("endDate", symptomEndDate);
 
         final Context context = getApplicationContext();
         final CharSequence text = "Symptom added!";
@@ -123,7 +152,6 @@ public class AddSymptomActivity extends AppCompatActivity {
                         Toast.makeText(context, text, duration).show();
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("symptom", symptom);
-                        resultIntent.putExtra("date", symptomDate);
                         setResult(RESULT_OK, resultIntent);
                     }
                 })

@@ -84,13 +84,12 @@ public class SymptomActivity extends AppCompatActivity {
         if (requestCode == ADD_SYMPTOM_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Bundle symptomData = data.getExtras();
-                updateSymptomLog(symptomData.getCharSequence("date").toString(),
-                        symptomData.getCharSequence("symptom").toString());
+                updateSymptomLog(symptomData.getCharSequence("symptom").toString());
             }
         }
     }
 
-    public void updateSymptomLog(String date, String symptom) {
+    public void updateSymptomLog(String symptom) {
         linearLayout = (LinearLayout) findViewById(R.id.symptomLog);
         textView = new TextView(SymptomActivity.this);
         String fullInfo = symptom;
