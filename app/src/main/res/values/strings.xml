@@ -19,7 +19,7 @@
     <string name="food">Food</string>
     <string name="food_log">Food Log</string>
     <string name="add_food">Add Food</string>
-    <string name="meds">Meds</string>
+    <string name="meds">Medications</string>
     <string name="meds_log">Medication Log</string>
     <string name="add_med">Add Medication</string>
     <string name="symptoms">Symptoms</string>
