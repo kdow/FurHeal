@@ -31,4 +31,9 @@
         <item>Pill(s)</item>
         <item>Drop(s)</item>
     </string-array>
+    <string-array name="severity_array">
+        <item>Mild</item>
+        <item>Moderate</item>
+        <item>Severe</item>
+    </string-array>
 </resources>

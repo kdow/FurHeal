@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ public class AddSymptomActivity extends AppCompatActivity {
     String mSymptomDate;
     String mSymptomEndDate;
     Button mSaveButton;
+    String mSeverity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,27 @@ public class AddSymptomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_symptom);
 
         initViews();
+
+        mSeverity = getResources().getStringArray(R.array.severity_array)[0];
+
+        Spinner spin = (Spinner) findViewById(R.id.severity_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.severity_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spin.setAdapter(adapter);
+
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v("item", (String) parent.getItemAtPosition(position));
+                mSeverity = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         selectDate = findViewById(R.id.symptom_date);
         endDate = findViewById(R.id.end_date);
@@ -130,9 +155,11 @@ public class AddSymptomActivity extends AppCompatActivity {
         final String symptom = mEditText.getText().toString();
         final String symptomDate = mSymptomDate;
         final String symptomEndDate = mSymptomEndDate;
+        final String severity = mSeverity;
 
         Map<String, Object> medEntry = new HashMap<>();
         medEntry.put("symptom", symptom);
+        medEntry.put("severity", severity);
         medEntry.put("startDate", symptomDate);
         medEntry.put("endDate", symptomEndDate);
 
