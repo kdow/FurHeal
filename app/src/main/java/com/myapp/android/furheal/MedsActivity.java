@@ -98,4 +98,9 @@ public class MedsActivity extends AppCompatActivity {
             linearLayout.addView(textView);
         }
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(MedsActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

@@ -189,4 +189,9 @@ public class AddSymptomActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(AddSymptomActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

@@ -76,4 +76,9 @@ public class AddNewPetActivity extends AppCompatActivity {
         intent.putExtra("petName", name);
         startActivityForResult(intent, SELECT_PET_REQUEST);
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(AddNewPetActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

@@ -122,4 +122,9 @@ public class WeightActivity extends AppCompatActivity {
     public void setDate(Date date) {
         mDate = date;
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(WeightActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

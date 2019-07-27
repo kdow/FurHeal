@@ -173,4 +173,9 @@ public class AddWeightActivity extends AppCompatActivity {
                 }
             });
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(AddWeightActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

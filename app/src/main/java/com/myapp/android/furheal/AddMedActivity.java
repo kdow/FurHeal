@@ -198,4 +198,9 @@ public class AddMedActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(AddMedActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

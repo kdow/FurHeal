@@ -98,4 +98,9 @@ public class SymptomActivity extends AppCompatActivity {
             linearLayout.addView(textView);
         }
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(SymptomActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }

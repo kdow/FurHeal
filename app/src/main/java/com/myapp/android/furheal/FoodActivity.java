@@ -100,4 +100,9 @@ public class FoodActivity extends AppCompatActivity {
             linearLayout.addView(textView);
         }
     }
+
+    public void goHome(View view) {
+        Intent intent = new Intent(FoodActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }
