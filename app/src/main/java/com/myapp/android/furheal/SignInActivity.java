@@ -127,40 +127,68 @@ public class SignInActivity extends AppCompatActivity {
 
             // Get reference of widgets from XML layout
 
+//            String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//
+//            collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+////                            String userPet = document.getData().get("pets").toString();
+//                            Log.d(TAG, document.getId() + " => " + document.getData());
+//                        }
+//                    } else {
+//                        Log.d(TAG, "Error getting documents: ", task.getException());
+//                    }
+//                }
+//            });
+
+
+
             String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+            DocumentReference docRef = db.collection("users")
+                    .document(currentUser);
 
-            collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                            String userPet = document.getData().get("pets").toString();
-                            Log.d(TAG, document.getId() + " => " + document.getData());
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+//                            String petNameStr = document.getData().get("pet").toString();
+                            Object petName = document.getString("pet");
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+
+                            // Initializing a String Array
+                            String[] pets = new String[]{
+                                    (String) petName,
+                                    "New Pet"
+                            };
+
+                            final List<String> petsList = new ArrayList<>(Arrays.asList(pets));
+
+                            // Initializing an ArrayAdapter
+                            final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                                    SignInActivity.this,R.layout.spinner_item,petsList);
+
+                            spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+                            spinner.setAdapter(spinnerArrayAdapter);
+
+
+                        } else {
+                            Log.d(TAG, "No such document");
                         }
                     } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
                 }
             });
 
 
 
-
-            // Initializing a String Array
-            String[] pets = new String[]{
-                    "Jazzy",
-                    "New Pet"
-            };
-
-            final List<String> petsList = new ArrayList<>(Arrays.asList(pets));
-
-            // Initializing an ArrayAdapter
-            final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
-                    this,R.layout.spinner_item,petsList);
-
-            spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-            spinner.setAdapter(spinnerArrayAdapter);
 
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
