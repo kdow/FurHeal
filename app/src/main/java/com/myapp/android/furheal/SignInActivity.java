@@ -62,6 +62,7 @@ public class SignInActivity extends AppCompatActivity {
     private String userPet;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference = db.collection("users");
+    public static String REFERENCE_USER = "user";
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build());
@@ -127,25 +128,6 @@ public class SignInActivity extends AppCompatActivity {
 
             // Get reference of widgets from XML layout
 
-//            String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//
-//
-//            collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        for (QueryDocumentSnapshot document : task.getResult()) {
-////                            String userPet = document.getData().get("pets").toString();
-//                            Log.d(TAG, document.getId() + " => " + document.getData());
-//                        }
-//                    } else {
-//                        Log.d(TAG, "Error getting documents: ", task.getException());
-//                    }
-//                }
-//            });
-
-
-
             String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             DocumentReference docRef = db.collection("users")
@@ -158,21 +140,19 @@ public class SignInActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-//                            String petNameStr = document.getData().get("pet").toString();
-                            Object petName = document.getString("pet");
+                            String petName = document.getString("pet");
                             Log.d(TAG, "DocumentSnapshot data: " + document.getData());
 
-                            // Initializing a String Array
-                            String[] pets = new String[]{
-                                    (String) petName,
-                                    "New Pet"
-                            };
+                            ArrayList<String> pets = new ArrayList<String>();
 
-                            final List<String> petsList = new ArrayList<>(Arrays.asList(pets));
+                            if (petName != null) {
+                                pets.add(petName);
+                            }
+                            pets.add("New Pet");
 
                             // Initializing an ArrayAdapter
                             final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
-                                    SignInActivity.this,R.layout.spinner_item,petsList);
+                                    SignInActivity.this,R.layout.spinner_item,pets);
 
                             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
                             spinner.setAdapter(spinnerArrayAdapter);
@@ -186,8 +166,6 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 }
             });
-
-
 
 
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -243,24 +221,30 @@ public class SignInActivity extends AppCompatActivity {
                 String name = user.getDisplayName();
 
                 // Create user map to add to User collection
-                Map<String, String> userEntry = new HashMap<>();
+                Map<String, Object> userEntry = new HashMap<>();
                 userEntry.put("userId", currentUserId);
                 userEntry.put("name", name);
 
-                collectionReference.document(currentUserId)
-                        .set(userEntry)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully written!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error writing document", e);
-                            }
-                        });
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference(REFERENCE_USER);
+
+                myRef.child("user").child(currentUserId).updateChildren(userEntry).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        // Done
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Log.w(TAG, "Error writing document", e);
+
+                    }
+                });
+
                 Log.d(this.getClass().getName(), "This user signed in with " + response.getProviderType());
                 updateUi();
                 // ...
