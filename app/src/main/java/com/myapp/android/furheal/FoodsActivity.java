@@ -21,10 +21,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
 
-public class MedsActivity extends AppCompatActivity {
-    private static final String TAG = "MedsDetail";
-    static final int ADD_MEDS_REQUEST = 1;
-    static final int SELECT_MED_REQUEST = 2;
+public class FoodsActivity extends AppCompatActivity {
+
+    private static final String TAG = "FoodDetail";
+    static final int ADD_FOOD_REQUEST = 1;
+    static final int SELECT_FOOD_REQUEST = 2;
 
     static LinearLayout linearLayout;
     static TextView textView;
@@ -36,42 +37,41 @@ public class MedsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_meds);
+        setContentView(R.layout.activity_foods);
 
-        linearLayout = (LinearLayout) findViewById(R.id.medsLog);
+        linearLayout = (LinearLayout) findViewById(R.id.foodLog);
 
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         CollectionReference docRef = db.collection("users")
-                .document(currentUser).collection("medications");
+                .document(currentUser).collection("food");
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
 
-                    for (final QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
                         Log.d(TAG, document.getId() + " => " + document.getData());
                         final String id = document.getId();
-                        final LinearLayout linearLayout = findViewById(R.id.medsLog);
-                        final TextView textView = new TextView(MedsActivity.this);
+                        final LinearLayout linearLayout = findViewById(R.id.foodLog);
+                        final TextView textView = new TextView(FoodsActivity.this);
                         textView.setTextSize(22);
                         textView.setPadding(0,8,0,8);
-                        final String medication = document.getData().get("medication").toString();
-                        textView.setText(medication);
+                        String food = document.getData().get("food").toString();
+                        textView.setText(food);
                         if (linearLayout != null) {
                             linearLayout.addView(textView);
                         }
                         textView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Intent myIntent = new Intent(MedsActivity.this, MedActivity.class);
+                                Intent myIntent = new Intent(FoodsActivity.this, FoodActivity.class);
                                 myIntent.putExtra("docId", id);
-                                startActivityForResult(myIntent, SELECT_MED_REQUEST);
+                                startActivityForResult(myIntent, SELECT_FOOD_REQUEST);
                             }
                         });
                     }
-
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
@@ -80,44 +80,39 @@ public class MedsActivity extends AppCompatActivity {
 
         System.out.println(docRef);
 
-        Button mAddMedButton = (Button) findViewById(R.id.add_med);
+        Button mAddFoodButton = (Button) findViewById(R.id.add_food);
 
-        mAddMedButton.setOnClickListener(new View.OnClickListener() {
+        mAddFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MedsActivity.this, AddMedActivity.class);
-                startActivityForResult(intent, ADD_MEDS_REQUEST);
+                Intent intent = new Intent(FoodsActivity.this, AddFoodActivity.class);
+                startActivityForResult(intent, ADD_FOOD_REQUEST);
             }
         });
-
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_MEDS_REQUEST) {
+        if (requestCode == ADD_FOOD_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Bundle medData = data.getExtras();
-                updateMedsLog(medData.getCharSequence("medication").toString());
+                Bundle foodData = data.getExtras();
+                updateFoodLog(foodData.getCharSequence("food").toString());
             }
         }
     }
 
-    public void updateMedsLog(String medication) {
-        linearLayout = (LinearLayout) findViewById(R.id.medsLog);
-        textView = new TextView(MedsActivity.this);
-        String fullInfo = medication;
+    public void updateFoodLog(String food) {
+        linearLayout = (LinearLayout) findViewById(R.id.foodLog);
+        textView = new TextView(FoodsActivity.this);
+        String fullInfo = food;
         textView.setText(fullInfo);
         if (linearLayout != null) {
             linearLayout.addView(textView);
         }
     }
 
-
-
     public void goHome(View view) {
-        Intent intent = new Intent(MedsActivity.this, MainActivity.class);
+        Intent intent = new Intent(FoodsActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }

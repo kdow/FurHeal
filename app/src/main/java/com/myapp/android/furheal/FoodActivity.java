@@ -7,30 +7,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.myapp.android.furheal.model.Pet;
-
-import java.util.Date;
 
 public class FoodActivity extends AppCompatActivity {
 
     private static final String TAG = "FoodDetail";
-    static final int ADD_FOOD_REQUEST = 1;
 
-    static LinearLayout linearLayout;
-    static TextView textView;
-
-    private Date mDate;
+    private TextView foodName;
+    private TextView startDate;
+    private TextView endDate;
 
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -39,66 +31,53 @@ public class FoodActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
 
-        linearLayout = (LinearLayout) findViewById(R.id.foodLog);
+
+        foodName = findViewById(R.id.foodName);
+        startDate = findViewById(R.id.startDate);
+        endDate = findViewById(R.id.endDate);
+
+        Intent intent= getIntent();
+        Bundle bundle = intent.getExtras();
+
+        String food = null;
+
+        if (bundle != null)
+        {
+            food = (String) bundle.get("docId");
+        }
 
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        CollectionReference docRef = db.collection("users")
-                .document(currentUser).collection("food");
+        DocumentReference docRef = db.collection("users").document(currentUser)
+                .collection("food").document(food);
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-                        final LinearLayout linearLayout = findViewById(R.id.foodLog);
-                        final TextView textView = new TextView(FoodActivity.this);
-                        textView.setTextSize(16);
-                        String fullDate = document.getData().get("food").toString();
-                        textView.setText(fullDate);
-                        if (linearLayout != null) {
-                            linearLayout.addView(textView);
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        foodName.setText(foodName.getText() + document.get("food").toString());
+                        startDate.setText(startDate.getText() + document.get("startDate").toString());
+                        if (document.get("endDate") != null) {
+                            endDate.setText(endDate.getText() + document.get("endDate").toString());
                         }
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
                 } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
 
-        System.out.println(docRef);
-
-        Button mAddFoodButton = (Button) findViewById(R.id.add_food);
-
-        mAddFoodButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FoodActivity.this, AddFoodActivity.class);
-                startActivityForResult(intent, ADD_FOOD_REQUEST);
-            }
-        });
+//        foodName = (TextView)findViewById(R.id.foodName);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_FOOD_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Bundle foodData = data.getExtras();
-                updateFoodLog(foodData.getCharSequence("food").toString());
-            }
-        }
-    }
-
-    public void updateFoodLog(String food) {
-        linearLayout = (LinearLayout) findViewById(R.id.foodLog);
-        textView = new TextView(FoodActivity.this);
-        String fullInfo = food;
-        textView.setText(fullInfo);
-        if (linearLayout != null) {
-            linearLayout.addView(textView);
-        }
+    public void goToFoods(View view) {
+        Intent intent = new Intent(FoodActivity.this, FoodsActivity.class);
+        startActivity(intent);
     }
 
     public void goHome(View view) {
