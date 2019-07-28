@@ -73,8 +73,6 @@ public class MedActivity extends AppCompatActivity {
                 }
             }
         });
-
-        medName = (TextView)findViewById(R.id.medName);
     }
 
     public void goToMeds(View view) {

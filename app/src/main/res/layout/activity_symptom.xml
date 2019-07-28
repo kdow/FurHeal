@@ -9,44 +9,46 @@
     tools:context=".SymptomActivity">
 
     <TextView
-        android:id="@+id/symptomTitle"
+        android:id="@+id/symptomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/symptom_log"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textSize="20dp"
+        android:text="Symptom: "/>
+
+    <TextView
+        android:id="@+id/severity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Severity: "/>
+
+    <TextView
+        android:id="@+id/startDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Start date: "/>
+
+    <TextView
+        android:id="@+id/endDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="End date: "/>
 
     <Button
-        android:id="@+id/add_symptom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/add_symptom"/>
-
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp">
-
-        <LinearLayout
-            android:id="@+id/symptomLog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-    </ScrollView>
+        android:layout_marginTop="20dp"
+        android:onClick="goToSymptoms"
+        android:text="Symptoms" />
 
     <ImageButton
         android:src="@drawable/ic_home_black_24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="goHome"/>
+        android:layout_marginTop="20dp"
+        android:onClick="goHome"
+        android:layout_gravity="center"/>
+
 </LinearLayout>

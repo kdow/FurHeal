@@ -7,28 +7,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.Date;
 
 public class SymptomActivity extends AppCompatActivity {
     private static final String TAG = "SymptomDetail";
-    static final int ADD_SYMPTOM_REQUEST = 1;
 
-    static LinearLayout linearLayout;
-    static TextView textView;
-
-    private Date mDate;
+    private TextView symptomName;
+    private TextView severity;
+    private TextView startDate;
+    private TextView endDate;
 
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -37,70 +31,56 @@ public class SymptomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptom);
 
-        linearLayout = (LinearLayout) findViewById(R.id.symptomLog);
+        symptomName = findViewById(R.id.symptomName);
+        severity = findViewById(R.id.severity);
+        startDate = findViewById(R.id.startDate);
+        endDate = findViewById(R.id.endDate);
+
+        Intent intent= getIntent();
+        Bundle bundle = intent.getExtras();
+
+        String symptom = null;
+
+        if (bundle != null)
+        {
+            symptom = (String) bundle.get("docId");
+        }
 
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        CollectionReference docRef = db.collection("users")
-                .document(currentUser).collection("symptoms");
+        DocumentReference docRef = db.collection("users").document(currentUser)
+                .collection("symptoms").document(symptom);
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-                        final LinearLayout linearLayout = findViewById(R.id.symptomLog);
-                        final TextView textView = new TextView( SymptomActivity.this);
-                        textView.setTextSize(16);
-                        String fullDate = document.getData().get("symptom").toString();
-                        textView.setText(fullDate);
-                        if (linearLayout != null) {
-                            linearLayout.addView(textView);
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        symptomName.setText(symptomName.getText() + document.get("symptom").toString());
+                        severity.setText(severity.getText() + document.get("severity").toString());
+                        startDate.setText(startDate.getText() + document.get("startDate").toString());
+                        if (document.get("endDate") != null) {
+                            endDate.setText(endDate.getText() + document.get("endDate").toString());
                         }
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
                 } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
-
-        System.out.println(docRef);
-
-        Button mAddSymptomButton = (Button) findViewById(R.id.add_symptom);
-
-        mAddSymptomButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent( SymptomActivity.this, AddSymptomActivity.class);
-                startActivityForResult(intent, ADD_SYMPTOM_REQUEST);
-            }
-        });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_SYMPTOM_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Bundle symptomData = data.getExtras();
-                updateSymptomLog(symptomData.getCharSequence("symptom").toString());
-            }
-        }
-    }
-
-    public void updateSymptomLog(String symptom) {
-        linearLayout = (LinearLayout) findViewById(R.id.symptomLog);
-        textView = new TextView(SymptomActivity.this);
-        String fullInfo = symptom;
-        textView.setText(fullInfo);
-        if (linearLayout != null) {
-            linearLayout.addView(textView);
-        }
+    public void goToSymptoms(View view) {
+        Intent intent = new Intent(SymptomActivity.this, SymptomsActivity.class);
+        startActivity(intent);
     }
 
     public void goHome(View view) {
-        Intent intent = new Intent(SymptomActivity.this, MainActivity.class);
+        Intent intent = new Intent(SymptomActivity.this, SymptomsActivity.class);
         startActivity(intent);
     }
 }

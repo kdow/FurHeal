@@ -71,8 +71,6 @@ public class FoodActivity extends AppCompatActivity {
                 }
             }
         });
-
-//        foodName = (TextView)findViewById(R.id.foodName);
     }
 
     public void goToFoods(View view) {
