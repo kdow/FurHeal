@@ -24,6 +24,7 @@ import java.util.Date;
 public class MedsActivity extends AppCompatActivity {
     private static final String TAG = "MedsDetail";
     static final int ADD_MEDS_REQUEST = 1;
+    static final int SELECT_MED_REQUEST = 2;
 
     static LinearLayout linearLayout;
     static TextView textView;
@@ -49,17 +50,27 @@ public class MedsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
 
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (final QueryDocumentSnapshot document : task.getResult()) {
                         Log.d(TAG, document.getId() + " => " + document.getData());
+                        final String id = document.getId();
                         final LinearLayout linearLayout = findViewById(R.id.medsLog);
                         final TextView textView = new TextView(MedsActivity.this);
                         textView.setTextSize(16);
-                        String fullDate = document.getData().get("medication").toString();
-                        textView.setText(fullDate);
+                        final String medication = document.getData().get("medication").toString();
+                        textView.setText(medication);
                         if (linearLayout != null) {
                             linearLayout.addView(textView);
                         }
+                        textView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent myIntent = new Intent(MedsActivity.this, MedActivity.class);
+                                myIntent.putExtra("docId", id);
+                                startActivityForResult(myIntent, SELECT_MED_REQUEST);
+                            }
+                        });
                     }
+
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
@@ -77,6 +88,9 @@ public class MedsActivity extends AppCompatActivity {
                 startActivityForResult(intent, ADD_MEDS_REQUEST);
             }
         });
+
+
+
     }
 
     @Override
@@ -98,6 +112,8 @@ public class MedsActivity extends AppCompatActivity {
             linearLayout.addView(textView);
         }
     }
+
+
 
     public void goHome(View view) {
         Intent intent = new Intent(MedsActivity.this, MainActivity.class);
