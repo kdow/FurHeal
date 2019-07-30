@@ -19,12 +19,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class FoodActivity extends AppCompatActivity {
 
     private static final String TAG = "FoodDetail";
+    static final int EDIT_FOOD_REQUEST = 2;
 
     private TextView foodName;
     private TextView startDate;
     private TextView endDate;
 
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    String foodId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,8 @@ public class FoodActivity extends AppCompatActivity {
         {
             food = (String) bundle.get("docId");
         }
+
+        foodId = food;
 
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -71,6 +76,12 @@ public class FoodActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void goToEdit(View view) {
+        Intent intent = new Intent(FoodActivity.this, EditFoodActivity.class);
+        intent.putExtra("docId", foodId);
+        startActivityForResult(intent, EDIT_FOOD_REQUEST);
     }
 
     public void goToFoods(View view) {
