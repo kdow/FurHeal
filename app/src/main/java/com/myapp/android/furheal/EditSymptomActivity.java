@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +23,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,9 +33,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditFoodActivity extends AppCompatActivity {
-
-    private static final String TAG = "EditFoodDetail";
+public class EditSymptomActivity extends AppCompatActivity {
+    private static final String TAG = "EditSymptomDetail";
 
     TextView date;
     DatePickerDialog datePickerDialog;
@@ -49,41 +47,65 @@ public class EditFoodActivity extends AppCompatActivity {
     private View endDate;
 
     EditText mEditText;
-    String mFoodDate;
-    String mEndDate;
+    String mSymptomDate;
+    String mSymptomEndDate;
     Button mSaveButton;
+    String mSeverity;
 
     private EditText editText;
-    private Button foodDate;
+    private Button symptomDate;
     private Button endingDate;
 
-    String foodId;
+    String symptomId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_food);
+        setContentView(R.layout.activity_edit_symptom);
 
         initViews();
 
         editText = findViewById(R.id.editText);
-        foodDate = findViewById(R.id.food_date);
+        symptomDate = findViewById(R.id.symptom_date);
         endingDate = findViewById(R.id.end_date);
+
+
+
+        mSeverity = getResources().getStringArray(R.array.severity_array)[0];
+
+        final Spinner spin = (Spinner) findViewById(R.id.severity_spinner);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.severity_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spin.setAdapter(adapter);
+
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v("item", (String) parent.getItemAtPosition(position));
+                mSeverity = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
 
         Intent intent= getIntent();
         Bundle bundle = intent.getExtras();
-
-        foodId = null;
+        symptomId = null;
 
         if (bundle != null)
         {
-            foodId = (String) bundle.get("docId");
+            symptomId = (String) bundle.get("docId");
         }
 
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DocumentReference docRef = db.collection("users").document(currentUser)
-                .collection("food").document(foodId);
+                .collection("symptoms").document(symptomId);
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -92,8 +114,15 @@ public class EditFoodActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        editText.setText(editText.getText() + document.get("food").toString());
-                        foodDate.setText(foodDate.getText() + document.get("startDate").toString());
+                        if (document.get("symptom") != null) {
+                            editText.setText(editText.getText() + document.get("symptom").toString());
+                        }
+                        if (document.get("severity") != null) {
+                            spin.setSelection(adapter.getPosition("severity"));
+                        }
+                        if (document.get("startDate") != null) {
+                            symptomDate.setText(symptomDate.getText() + document.get("startDate").toString());
+                        }
                         if (document.get("endDate") != null) {
                             endingDate.setText(endingDate.getText() + document.get("endDate").toString());
                         }
@@ -106,16 +135,21 @@ public class EditFoodActivity extends AppCompatActivity {
             }
         });
 
-        selectDate = findViewById(R.id.food_date);
+        selectDate = findViewById(R.id.symptom_date);
         endDate = findViewById(R.id.end_date);
         date = findViewById(R.id.tvDate);
+
+
+
+        selectDate = findViewById(R.id.symptom_date);
+        endDate = findViewById(R.id.end_date);
 
         calendar = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
         String currentDate = df.getDateInstance().format(calendar.getTime());
-        mFoodDate = currentDate;
+        mSymptomDate = currentDate;
 
-        final Button buttonDate = findViewById(R.id.food_date);
+        final Button buttonDate = findViewById(R.id.symptom_date);
 
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +157,7 @@ public class EditFoodActivity extends AppCompatActivity {
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(EditFoodActivity.this,
+                datePickerDialog = new DatePickerDialog(EditSymptomActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -131,7 +165,7 @@ public class EditFoodActivity extends AppCompatActivity {
                                 c.set(Calendar.YEAR, year);
                                 c.set(Calendar.MONTH, month);
                                 c.set(Calendar.DAY_OF_MONTH, day);
-                                mFoodDate = DateFormat.getDateInstance().format(c.getTime());
+                                mSymptomDate = DateFormat.getDateInstance().format(c.getTime());
                                 buttonDate.setText(DateFormat.getDateInstance().format(c.getTime()));
                             }
                         }, year, month, dayOfMonth);
@@ -148,7 +182,7 @@ public class EditFoodActivity extends AppCompatActivity {
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(EditFoodActivity.this,
+                datePickerDialog = new DatePickerDialog(EditSymptomActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -156,7 +190,7 @@ public class EditFoodActivity extends AppCompatActivity {
                                 c.set(Calendar.YEAR, year);
                                 c.set(Calendar.MONTH, month);
                                 c.set(Calendar.DAY_OF_MONTH, day);
-                                mEndDate = DateFormat.getDateInstance().format(c.getTime());
+                                mSymptomEndDate = DateFormat.getDateInstance().format(c.getTime());
                                 endDate.setText(DateFormat.getDateInstance().format(c.getTime()));
                             }
                         }, year, month, dayOfMonth);
@@ -164,6 +198,7 @@ public class EditFoodActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
     }
 
     private void initViews() {
@@ -181,27 +216,30 @@ public class EditFoodActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private void onSaveButtonClicked() {
-        final String food = mEditText.getText().toString();
-        final String foodDate = mFoodDate;
-        final String endDate = mEndDate;
+        final String symptom = mEditText.getText().toString();
+        final String symptomDate = mSymptomDate;
+        final String symptomEndDate = mSymptomEndDate;
+        final String severity = mSeverity;
 
-        Map<String, Object> foodEntry = new HashMap<>();
-        foodEntry.put("food", food);
-        foodEntry.put("startDate", foodDate);
-        foodEntry.put("endDate", endDate);
+        Map<String, Object> medEntry = new HashMap<>();
+        medEntry.put("symptom", symptom);
+        medEntry.put("severity", severity);
+        medEntry.put("startDate", symptomDate);
+        medEntry.put("endDate", symptomEndDate);
 
         final Context context = getApplicationContext();
-        final CharSequence text = "Food updated!";
+        final CharSequence text = "Symptom updated!";
         final int duration = Toast.LENGTH_SHORT;
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DocumentReference foodRef = db.collection("users")
-                .document(currentUser)
-                .collection("food")
-                .document(foodId);
 
-        foodRef
-                .update(foodEntry)
+        DocumentReference symptomRef = db.collection("users")
+                .document(currentUser)
+                .collection("symptoms")
+                .document(symptomId);
+
+        symptomRef
+                .update(medEntry)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -217,13 +255,13 @@ public class EditFoodActivity extends AppCompatActivity {
                 });
     }
 
-    public void goToFoods(View view) {
-        Intent intent = new Intent(EditFoodActivity.this, FoodsActivity.class);
+    public void goToSymptoms(View view) {
+        Intent intent = new Intent(EditSymptomActivity.this, SymptomsActivity.class);
         startActivity(intent);
     }
 
     public void goHome(View view) {
-        Intent intent = new Intent(EditFoodActivity.this, MainActivity.class);
+        Intent intent = new Intent(EditSymptomActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }

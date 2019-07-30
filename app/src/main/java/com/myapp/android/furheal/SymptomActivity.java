@@ -18,11 +18,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SymptomActivity extends AppCompatActivity {
     private static final String TAG = "SymptomDetail";
+    static final int EDIT_SYMPTOM_REQUEST = 2;
 
     private TextView symptomName;
     private TextView severity;
     private TextView startDate;
     private TextView endDate;
+
+    String symptom;
 
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -39,7 +42,7 @@ public class SymptomActivity extends AppCompatActivity {
         Intent intent= getIntent();
         Bundle bundle = intent.getExtras();
 
-        String symptom = null;
+        symptom = null;
 
         if (bundle != null)
         {
@@ -59,8 +62,12 @@ public class SymptomActivity extends AppCompatActivity {
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         symptomName.setText(symptomName.getText() + document.get("symptom").toString());
-                        severity.setText(severity.getText() + document.get("severity").toString());
-                        startDate.setText(startDate.getText() + document.get("startDate").toString());
+                        if (document.get("severity") != null) {
+                            severity.setText(severity.getText() + document.get("severity").toString());
+                        }
+                        if (document.get("startDate") != null) {
+                            startDate.setText(startDate.getText() + document.get("startDate").toString());
+                        }
                         if (document.get("endDate") != null) {
                             endDate.setText(endDate.getText() + document.get("endDate").toString());
                         }
@@ -72,6 +79,12 @@ public class SymptomActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void goToEdit(View view) {
+        Intent intent = new Intent(SymptomActivity.this, EditSymptomActivity.class);
+        intent.putExtra("docId", symptom);
+        startActivityForResult(intent, EDIT_SYMPTOM_REQUEST);
     }
 
     public void goToSymptoms(View view) {

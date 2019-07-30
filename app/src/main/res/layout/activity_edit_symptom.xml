@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditFoodActivity">
+    tools:context=".EditSymptomActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="40dp"
         android:id="@+id/linearLayout">
 
         <TextView
@@ -21,15 +21,28 @@
             android:layout_below="@+id/linearLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="Edit Food:" />
+            android:text="Edit Symptom:" />
 
         <EditText
             android:id="@+id/editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Food"
+            android:hint="Symptom"
             android:inputType="text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="Severity:" />
+
+        <Spinner
+            android:id="@+id/severity_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="match_parent"
@@ -40,7 +53,7 @@
             android:text="Start date:" />
 
         <Button
-            android:id="@+id/food_date"
+            android:id="@+id/symptom_date"
             android:text=""
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -76,15 +89,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_gravity="center"
-            android:onClick="goToFoods"
-            android:text="Food" />
+            android:onClick="goToSymptoms"
+            android:text="Symptoms" />
 
         <ImageButton
             android:src="@drawable/ic_home_black_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:onClick="goHome"/>
 
     </LinearLayout>
