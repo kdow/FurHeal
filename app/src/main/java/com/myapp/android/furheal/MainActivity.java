@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         Button mSymptomsButton = (Button) findViewById(R.id.symptoms);
         Button mWeightButton = (Button) findViewById(R.id.weight);
         Button mFoodButton = (Button) findViewById(R.id.food);
+        Button mProfileButton = (Button) findViewById(R.id.profile);
 
         mMedsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FoodsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
                 startActivity(intent);
             }
         });

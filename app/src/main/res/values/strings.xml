@@ -36,4 +36,5 @@
         <item>Moderate</item>
         <item>Severe</item>
     </string-array>
+    <string name="profile">Profile</string>
 </resources>
