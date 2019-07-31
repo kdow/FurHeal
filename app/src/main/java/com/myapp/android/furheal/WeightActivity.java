@@ -6,36 +6,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.myapp.android.furheal.model.Pet;
-
-import java.util.Arrays;
-import java.util.Date;
 
 public class WeightActivity extends AppCompatActivity {
-
     private static final String TAG = "WeightDetail";
-    static final int ADD_WEIGHT_REQUEST = 1;
+    static final int EDIT_WEIGHT_REQUEST = 2;
 
-    static LinearLayout linearLayout;
-    static TextView textView;
+    private TextView value;
+    private TextView date;
 
-    private Date mDate;
+    String weight;
 
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -44,83 +32,53 @@ public class WeightActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weight);
 
-        linearLayout = (LinearLayout) findViewById(R.id.weightLog);
+        value = findViewById(R.id.value);
+        date = findViewById(R.id.date);
+
+        Intent intent= getIntent();
+        Bundle bundle = intent.getExtras();
+
+        weight = null;
+
+        if (bundle != null)
+        {
+            weight = (String) bundle.get("docId");
+        }
 
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        CollectionReference docRef = db.collection("users")
-                .document(currentUser).collection("weights");
+        DocumentReference docRef = db.collection("users").document(currentUser)
+                .collection("weights").document(weight);
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Pet p = new Pet(document.getId());
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                final LinearLayout linearLayout = findViewById(R.id.weightLog);
-                                final TextView textView = new TextView(WeightActivity.this);
-                                textView.setTextSize(16);
-                                String fullDate = document.getData().get("weight").toString()
-                                        + " " + document.getData().get("unit").toString() + " "
-                                        + document.getData().get("date").toString();
-                                textView.setText(fullDate);
-                                if (linearLayout != null) {
-                                    linearLayout.addView(textView);
-                                }
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-        });
-
-        System.out.println(docRef);
-
-        Button mAddWeightButton = (Button) findViewById(R.id.add_weight);
-
-        mAddWeightButton.setOnClickListener(new View.OnClickListener() {
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View v) {
-                goToAddWeight();
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        value.setText(value.getText() + document.get("weight").toString()
+                            + " " + document.get("unit"));
+                        date.setText(date.getText() + document.get("date").toString());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
             }
         });
     }
 
-    private void goToAddWeight() {
-        Intent intent = new Intent(this, AddWeightActivity.class);
-        startActivityForResult(intent, ADD_WEIGHT_REQUEST);
+    public void goToEdit(View view) {
+        Intent intent = new Intent(WeightActivity.this, EditWeightActivity.class);
+        intent.putExtra("docId", weight);
+        startActivityForResult(intent, EDIT_WEIGHT_REQUEST);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_WEIGHT_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Bundle weightData = data.getExtras();
-                updateWeightLog(weightData.getCharSequence("date").toString(),
-                        weightData.getCharSequence("weight").toString(),
-                        weightData.getCharSequence("unit").toString());
-            }
-        }
-    }
-
-    public void updateWeightLog(String date, String weight, String unit) {
-        linearLayout = (LinearLayout) findViewById(R.id.weightLog);
-        textView = new TextView(WeightActivity.this);
-        String fullInfo = weight + " " + unit + " " + date;
-        textView.setText(fullInfo);
-        if (linearLayout != null) {
-            linearLayout.addView(textView);
-        }
-    }
-
-    public Date getDate() {
-        return mDate;
-    }
-
-    public void setDate(Date date) {
-        mDate = date;
+    public void goToWeights(View view) {
+        Intent intent = new Intent(WeightActivity.this, WeightsActivity.class);
+        startActivity(intent);
     }
 
     public void goHome(View view) {

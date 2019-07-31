@@ -1,5 +1,8 @@
 package com.myapp.android.furheal;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,28 +18,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.myapp.android.furheal.model.WeightEntry;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddWeightActivity extends AppCompatActivity {
+public class EditWeightActivity extends AppCompatActivity {
 
-    private static final String TAG = "AddWeightDetail";
+    private static final String TAG = "EditWeightDetail";
 
     TextView date;
     DatePickerDialog datePickerDialog;
@@ -48,21 +47,29 @@ public class AddWeightActivity extends AppCompatActivity {
     private View selectDate;
 
     EditText mEditText;
-    String mWeightDate;
-    Button mSaveButton;
     String mWeightUnit;
+    String mDate;
+    Button mSaveButton;
+
+    private EditText editWeight;
+    private Button weightDate;
+
+    String weightId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_weight);
+        setContentView(R.layout.activity_edit_weight);
 
         initViews();
 
+        editWeight = findViewById(R.id.editWeight);
+        weightDate = findViewById(R.id.weight_date);
+
         mWeightUnit = getResources().getStringArray(R.array.weight_options_array)[0];
 
-        Spinner spin = (Spinner) findViewById(R.id.add_weights_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        final Spinner spin = (Spinner) findViewById(R.id.edit_weight_spinner);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.weight_options_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spin.setAdapter(adapter);
@@ -80,20 +87,55 @@ public class AddWeightActivity extends AppCompatActivity {
             }
         });
 
+
+        Intent intent= getIntent();
+        Bundle bundle = intent.getExtras();
+        weightId = null;
+
+        if (bundle != null)
+        {
+            weightId = (String) bundle.get("docId");
+        }
+
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference docRef = db.collection("users").document(currentUser)
+                .collection("weights").document(weightId);
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        if (document.get("dosage") != null) {
+                            editWeight.setText(editWeight.getText() + document.get("weight").toString());
+                        }
+                        if (document.get("unit") != null) {
+                            spin.setSelection(adapter.getPosition("unit"));
+                        }
+                        if (document.get("startDate") != null) {
+                            weightDate.setText(weightDate.getText() + document.get("date").toString());
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+
         selectDate = findViewById(R.id.weight_date);
-        date = findViewById(R.id.tvDate);
 
         calendar = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
         String currentDate = df.getDateInstance().format(calendar.getTime());
-        mWeightDate = currentDate;
-//        try {
-//            mWeightDate = df.parse(currentDate);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        mDate = currentDate;
+
         final Button buttonDate = findViewById(R.id.weight_date);
-        buttonDate.setText(currentDate);
 
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +143,7 @@ public class AddWeightActivity extends AppCompatActivity {
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(AddWeightActivity.this,
+                datePickerDialog = new DatePickerDialog(EditWeightActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -109,7 +151,7 @@ public class AddWeightActivity extends AppCompatActivity {
                                 c.set(Calendar.YEAR, year);
                                 c.set(Calendar.MONTH, month);
                                 c.set(Calendar.DAY_OF_MONTH, day);
-                                mWeightDate = DateFormat.getDateInstance().format(c.getTime());
+                                mDate = DateFormat.getDateInstance().format(c.getTime());
                                 buttonDate.setText(DateFormat.getDateInstance().format(c.getTime()));
                             }
                         }, year, month, dayOfMonth);
@@ -119,8 +161,9 @@ public class AddWeightActivity extends AppCompatActivity {
         });
     }
 
+
     private void initViews() {
-        mEditText = findViewById(R.id.editText);
+        editWeight = findViewById(R.id.editWeight);
 
         mSaveButton = findViewById(R.id.saveButton);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
@@ -134,53 +177,50 @@ public class AddWeightActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private void onSaveButtonClicked() {
-        final String weight = mEditText.getText().toString();
-        final String weightUnit = mWeightUnit;
-        final String weightDate = mWeightDate;
-//        final WeightEntry newWeight = new WeightEntry(weight);
+        final String weight = editWeight.getText().toString();
+        final String unit = mWeightUnit;
+        final String weightDate = mDate;
 
         Map<String, Object> weightEntry = new HashMap<>();
         weightEntry.put("weight", weight);
-        weightEntry.put("unit", weightUnit);
+        weightEntry.put("unit", unit);
         weightEntry.put("date", weightDate);
 
         final Context context = getApplicationContext();
-        final CharSequence text = "Weight added!";
+        final CharSequence text = "Weight updated!";
         final int duration = Toast.LENGTH_SHORT;
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        db.collection("users").document(currentUser)
+
+        DocumentReference weightRef = db.collection("users")
+                .document(currentUser)
                 .collection("weights")
-            .add(weightEntry)
-            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.get());
-                    mEditText.setText("");
-                    Toast.makeText(context, text, duration).show();
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("weight", weight);
-                    resultIntent.putExtra("unit", weightUnit);
-                    resultIntent.putExtra("date", weightDate);
-                    setResult(RESULT_OK, resultIntent);
-//                    WeightsActivity.updateWeightLog(weightDate, weight, weightUnit);
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error adding document", e);
-                }
-            });
+                .document(weightId);
+
+        weightRef
+                .update(weightEntry)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        Toast.makeText(context, text, duration).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
     }
 
     public void goToWeights(View view) {
-        Intent intent = new Intent(AddWeightActivity.this, WeightsActivity.class);
+        Intent intent = new Intent(EditWeightActivity.this, WeightsActivity.class);
         startActivity(intent);
     }
 
     public void goHome(View view) {
-        Intent intent = new Intent(AddWeightActivity.this, MainActivity.class);
+        Intent intent = new Intent(EditWeightActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }

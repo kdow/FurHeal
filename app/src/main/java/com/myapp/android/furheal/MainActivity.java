@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         mWeightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, WeightActivity.class);
+                Intent intent = new Intent(MainActivity.this, WeightsActivity.class);
                 startActivity(intent);
             }
         });

@@ -9,8 +9,8 @@
     <string name="add_weight">Add Weight</string>
     <string name="export_weight">Export Weight History</string>
     <string-array name="weight_options_array">
-        <item>Pounds</item>
-        <item>Kilograms</item>
+        <item>pounds</item>
+        <item>kilograms</item>
     </string-array>
     <string name="date_picker_title">Date of weighing:</string>
     <string-array name="pet_options_array">

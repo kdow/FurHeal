@@ -234,7 +234,7 @@ public class EditMedActivity extends AppCompatActivity {
         medEntry.put("endDate", endDate);
 
         final Context context = getApplicationContext();
-        final CharSequence text = "Medication added!";
+        final CharSequence text = "Medication updated!";
         final int duration = Toast.LENGTH_SHORT;
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -260,29 +260,6 @@ public class EditMedActivity extends AppCompatActivity {
                         Log.w(TAG, "Error updating document", e);
                     }
                 });
-
-
-//        db.collection("users").document(currentUser)
-//                .collection("medications")
-//                .add(medEntry)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.get());
-//                        mEditText.setText("");
-//                        mEditDoseText.setText("");
-//                        Toast.makeText(context, text, duration).show();
-//                        Intent resultIntent = new Intent();
-//                        resultIntent.putExtra("medication", med);
-//                        setResult(RESULT_OK, resultIntent);
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w(TAG, "Error adding document", e);
-//                    }
-//                });
     }
 
     public void goToMeds(View view) {
