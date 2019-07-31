@@ -87,11 +87,7 @@ public class AddWeightActivity extends AppCompatActivity {
         SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
         String currentDate = df.getDateInstance().format(calendar.getTime());
         mWeightDate = currentDate;
-//        try {
-//            mWeightDate = df.parse(currentDate);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+
         final Button buttonDate = findViewById(R.id.weight_date);
         buttonDate.setText(currentDate);
 
