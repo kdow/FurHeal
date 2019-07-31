@@ -169,6 +169,11 @@ public class AddFoodActivity extends AppCompatActivity {
                 });
     }
 
+    public void goToFoods(View view) {
+        Intent intent = new Intent(AddFoodActivity.this, FoodsActivity.class);
+        startActivity(intent);
+    }
+
     public void goHome(View view) {
         Intent intent = new Intent(AddFoodActivity.this, MainActivity.class);
         startActivity(intent);

@@ -190,6 +190,11 @@ public class AddSymptomActivity extends AppCompatActivity {
                 });
     }
 
+    public void goToSymptoms(View view) {
+        Intent intent = new Intent(AddSymptomActivity.this, SymptomsActivity.class);
+        startActivity(intent);
+    }
+
     public void goHome(View view) {
         Intent intent = new Intent(AddSymptomActivity.this, MainActivity.class);
         startActivity(intent);

@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="60dp"
         android:id="@+id/linearLayout">
 
         <TextView
@@ -75,6 +75,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:onClick="goToFoods"
+            android:text="Food" />
 
         <ImageButton
             android:src="@drawable/ic_home_black_24dp"
