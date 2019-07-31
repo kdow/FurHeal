@@ -18,11 +18,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MedActivity extends AppCompatActivity {
     private static final String TAG = "MedDetail";
+    static final int EDIT_MED_REQUEST = 2;
 
     private TextView medName;
     private TextView dosage;
     private TextView startDate;
     private TextView endDate;
+
+    String medication;
 
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -39,7 +42,7 @@ public class MedActivity extends AppCompatActivity {
         Intent intent= getIntent();
         Bundle bundle = intent.getExtras();
 
-        String medication = null;
+        medication = null;
 
         if (bundle != null)
         {
@@ -73,6 +76,12 @@ public class MedActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void goToEdit(View view) {
+        Intent intent = new Intent(MedActivity.this, EditMedActivity.class);
+        intent.putExtra("docId", medication);
+        startActivityForResult(intent, EDIT_MED_REQUEST);
     }
 
     public void goToMeds(View view) {
